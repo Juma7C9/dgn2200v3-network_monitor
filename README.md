@@ -23,7 +23,7 @@ Optional dependencies
 Setup
 -----
 + Unpack and build toolchain (instructions in the `README` supplied), using `toolchain.config` as `.config` file.
-+ Unpack, `make && make install` kernel and source, also in the toolchain package (if you are running linux>2.6 you'll need to edit `Kernel/bcm963xx/make.common`
++ Unpack, `make && make install` kernel and source, also in the toolchain package (if you are running linux>2.6 you'll need to edit `Kernel/bcm963xx/make.common`,
   e.g. setting `KERNEL_VERSION := 2.6`)
 + Build rrdtool
 
@@ -38,7 +38,7 @@ Setup
   $ wget http://oss.oetiker.ch/rrdtool/pub/rrdtool-${rrdtool_version}.tar.gz
   $ tar -xzf rrdtool-${rrdtool_version}
   $ cd rrdtool-${rrdtool_version}
-  $ CPPFLAGS="-I/$PREFIX/usr/include/cairo -I/$PREFIX/usr/include/libpng12"  --sysroot=$PREFIX \
+  $ CPPFLAGS="-I/$PREFIX/usr/include/cairo -I/$PREFIX/usr/include/libpng12  --sysroot=$PREFIX" \
 	./configure --prefix=/opt/rrdtool --host=$TARGET --disable-tcl --disable-python
   $ make
   # make install
@@ -51,9 +51,9 @@ You will need to unlock it visiting router's debug page ([192.168.0.1/setup.cgi?
 ```
   # mount -o remount,rw /
 ```
-+ Optionally copy tar, wget, nano/vi on the router (aka the 'target')
-+ Copy `/opt/rrdtool/{bin,lib}` to target (e.g. via usb drive or wget/ftp)
-+ Copy additional libs from `$PREFIX/usr/lib` to `/opt/rrdtool/lib` (or `/lib`) on target (lib's list below).
++ Optionally copy tar, wget, nano/vi to the router (aka the 'target')
++ Copy `/opt/rrdtool/{bin,lib}` to the target (e.g. via usb drive or wget/ftp)
++ Copy libs below from `$PREFIX/usr/lib` to `/opt/rrdtool/lib` (or `/lib`) to the target:
 
 ```
   libcairo.so.2.17.5
@@ -81,7 +81,7 @@ You will need to unlock it visiting router's debug page ([192.168.0.1/setup.cgi?
 ```
 
 + Copy `pango-basic-fc.so` from `$PREFIX/usr/lib/pango/1.6.0/modules` to `/usr/lib/pango/1.6.0/modules` on target.
-+ Copy `pango-querymodules` from `$PREFIX/usr/bin` and execute `pango-querymodules > '/etc/pango/pango.modules`.
++ Copy `pango-querymodules` from `$PREFIX/usr/bin` and execute `pango-querymodules > '/etc/pango/pango.modules'`.
 + Copy `DejaVuSansMono.ttf` (or any other TTF font you like) from your system to `/usr/share/fonts/TTF`.
 + Copy files from this repo to a directory of your liking on the target (e.g. `/opt/rrdtool/scripts`).
 + Make a directory for output graphs
@@ -94,10 +94,10 @@ You will need to unlock it visiting router's debug page ([192.168.0.1/setup.cgi?
 
 Usage
 -----
-+ Configure `nas1.conf` (you can rename if you like).
-+ Run `./create_rrd.sh ./nas1.conf` to create rr database.
-+ Run `./poll_graph.sh ./nas1.conf` every minute (or less) to poll the database.
-+ Run `./poll_graph_*.sh ./nas1.conf` every now and then to create png's (default every 1, 5, 30, 120 minutes and 1 day, respectively).
++ Configure `nas1.conf` (you can rename it if you like).
++ Run `./create_rrd.sh ./nas1.conf` once to create rr database.
++ Run `./poll_stats.sh ./nas1.conf` every minute (or less) to poll the database.
++ Run `./print_graph_*.sh ./nas1.conf` every now and then to create png's (default every 1, 5, 30, 120 minutes and 1 day, respectively).
 
 To run scripts periodically you can use target's cron, or the `cronlike.sh` script supplied.
 
