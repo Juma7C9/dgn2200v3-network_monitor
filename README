@@ -1,0 +1,54 @@
+Requirements: make-3.81, texinfo<5
+
+build toolchain, selecting needed packages (see list on rrdtool's site)
+build kernel/source, as root (you need to set KERNEL_VERSION := 2.6 in ./Kernel/bcm963xx/make.common)
+
+set CC, LD, ... commands to point to crosscompiler binaries
+set PREFIX to crosscompiler prefix
+configure rrdtool with "CPPFLAGS="-I/$PREFIX/usr/include/cairo -I/$PREFIX/usr/include/libpng12  --sysroot=$PREFIX \
+						./configure --prefix=/opt/rrdtool --host=$TARGET --disable-tcl --disable-python" (inside build root)
+make & make install
+
+copy /opt/rrdtool/{bin,lib} to target (eg. via ftp/wget)
+copy & extract rrdtool.tar.gz to target
+
+copy additional libraries to target (libcairo.so.2.17.5
+									libexpat.so.1.5.2
+									libfontconfig.so.1.3.0
+									libfreetype.so.6.3.20
+									libglib-2.0.so.0.2000.5
+									libgmodule-2.0.so.0.2000.5
+									libgobject-2.0.so.0.2000.5
+									libiconv.so.2.4.0
+									libintl.so.8.0.1
+									libpango-1.0.so.0.2002.3
+									libpangocairo-1.0.so.0.2002.3
+									libpangoft2-1.0.so.0.2002.3
+									libpixman-1.so.0.10.0	
+									librrd.so.4.2.1
+									librrd_th.so.4.2.1
+									libxml2.so.2.7.3)
+						from $TARGET/usr/lib
+
+check and eventually load other libraries
+
+copy pango-basic-fc.so from $PREFIX/usr/lib/pango/1.6.0/modules to /usr/lib/pango/1.6.0/modules on target
+copy pango-querymodules from $PREFIX/usr/bin and execute pango-querymodules > '/etc/pango/pango.modules'
+
+copy DejaVuSansMono.ttf (other fonts may be good too) from system to /usr/share/fonts/TTF
+copy fonts directory from $PREFIX/etc to /etc on target
+
+now rrdtool should be able to work
+
+write while true; sleep scripts as cron's surrogate
+
+mkdir /tmp/www/rrdtools
+copy rrdtools.htm to /tmp/www or /www.eng
+
+USAGE
+configure nas1.conf (eventually rename into $iface.conf)
+run ./create_rrd.sh ./nas1.conf to create rr database
+run ./poll_graph.sh ./nas1.conf every minute to poll database
+run ./poll_graph_*.sh ./nas1.conf every now and then to create png's (default every 1, 5, 30, 120 minutes and 1 day, respectively).
+
+
